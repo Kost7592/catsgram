@@ -2,6 +2,7 @@ package ru.yandex.practicum.catsgram.controller;
 
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.catsgram.exception.ConditionsNotMetException;
+import ru.yandex.practicum.catsgram.exception.DuplicatedDataException;
 import ru.yandex.practicum.catsgram.exception.NotFoundException;
 import ru.yandex.practicum.catsgram.model.User;
 
@@ -36,15 +37,16 @@ public class UserController {
 
     @PutMapping
     public User updateUser(@RequestBody User newUser) {
+        if (newUser.getId() == null) {
+            throw new ConditionsNotMetException("Id должен быть указан");
+        }
         if (users.containsKey(newUser.getId())) {
             User updateUser = users.get(newUser.getId());
-            if (newUser.getId() == null) {
-                throw new ConditionsNotMetException("Id должен быть указан");
-            }
+
             if (updateUser.getEmail().equals(newUser.getEmail())) {
                 List<String> usersEmails = getUsersEmails();
                 if (usersEmails.contains(newUser.getEmail())) {
-                    throw new DuplicateFormatFlagsException("Этот @mail уже используется");
+                    throw new DuplicatedDataException("Этот @mail уже используется");
                 }
             } else {
                 if (newUser.getEmail() != null) {
