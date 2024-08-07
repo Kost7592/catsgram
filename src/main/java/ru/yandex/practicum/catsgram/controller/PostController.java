@@ -10,9 +10,10 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/posts/")
 public class PostController {
     private final PostService postService;
 
@@ -23,6 +24,11 @@ public class PostController {
     @GetMapping
     public Collection<Post> findAll() {
         return postService.findAll();
+    }
+
+    @GetMapping("{postId}")
+    public Optional<Post> findPostById(@PathVariable("postId") Long postId) {
+        return postService.findPostById(postId);
     }
 
     @PostMapping

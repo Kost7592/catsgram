@@ -8,27 +8,34 @@ import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.model.User;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 // Указываем, что класс PostService - является бином и его
 // нужно добавить в контекст приложения
 @Service
 public class PostService {
     private final UserService userService;
-    private final Map<Long, Post> posts = new HashMap<>();
+    private final List<Post> posts = new ArrayList<>();
+    private int id = 0;
 
     @Autowired
     public PostService(UserService userService) {
         this.userService = userService;
     }
-    public Collection<Post> findAll() {
-        return posts.values();
+    public List<Post> findAll() {
+        return posts;
+    }
+
+    public Post findPostById(Long postId) {
+        return posts.stream()
+                .filter(p ->p.getId.equals(id))
     }
 
     public Post create(Post post) {
+        User postAuthor = userService.findUserById(post.getAuthorId());
+
+
+
         if (post.getDescription() == null || post.getDescription().isBlank()) {
             throw new ConditionsNotMetException("Описание не может быть пустым");
         }
@@ -38,11 +45,11 @@ public class PostService {
         }
         post.setId(getNextId());
         post.setPostDate(Instant.now());
-        posts.put(post.getId(), post);
+        posts.add(post);
         return post;
     }
 
-    public Post update(Post newPost) {
+    /*public Post update(Post newPost) {
         if (newPost.getId() == null) {
             throw new ConditionsNotMetException("Id должен быть указан");
         }
@@ -55,14 +62,9 @@ public class PostService {
             return oldPost;
         }
         throw new NotFoundException("Пост с id = " + newPost.getId() + " не найден");
-    }
+    }*/
 
     private long getNextId() {
-        long currentMaxId = posts.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
+        return id++;
     }
 }

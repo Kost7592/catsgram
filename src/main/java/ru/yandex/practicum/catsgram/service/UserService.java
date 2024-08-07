@@ -11,6 +11,8 @@ import ru.yandex.practicum.catsgram.model.User;
 import java.time.Instant;
 import java.util.*;
 
+import static java.util.Locale.filter;
+
 @Service
 public class UserService {
     private final Map<Long, User> users = new HashMap<>();
@@ -66,7 +68,11 @@ public class UserService {
     }
 
     public Optional<User> findUserById(Long id) {
-        return Optional.ofNullable(users.getOrDefault(id, null));
+        return Optional.ofNullable(users.entrySet().stream()
+                .filter(x -> x.getKey().equals(id))
+                .findFirst()
+                .get()
+                .getValue());
     }
 
     private Long getNextId() {
@@ -78,10 +84,9 @@ public class UserService {
         return ++currentMaxId;
     }
 
-    private List<String> getUsersEmails() {
-        Collection<User> usersList = users.values();
-        return usersList.stream()
-                .map(User::getEmail)
-                .collect(ArrayList::new, List::add, List::addAll);
-    }
+    public User findUserByEmail(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return users.get(id);
 }
