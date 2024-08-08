@@ -1,6 +1,5 @@
 package ru.yandex.practicum.catsgram.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.catsgram.exception.ConditionsNotMetException;
@@ -65,7 +64,7 @@ public class UserService {
         throw new NotFoundException("Пользователь с id = " + newUser.getId() + " не найден");
     }
 
-    public Optional<User> findUserById(Long id) {
+    public Optional<User> getUserById(Long id) {
         return Optional.ofNullable(users.getOrDefault(id, null));
     }
 

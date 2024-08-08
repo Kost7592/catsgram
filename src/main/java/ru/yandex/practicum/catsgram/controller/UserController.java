@@ -1,13 +1,10 @@
 package ru.yandex.practicum.catsgram.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.catsgram.exception.ConditionsNotMetException;
-import ru.yandex.practicum.catsgram.exception.DuplicatedDataException;
-import ru.yandex.practicum.catsgram.exception.NotFoundException;
 import ru.yandex.practicum.catsgram.model.User;
 import ru.yandex.practicum.catsgram.service.UserService;
 
-import java.time.Instant;
 import java.util.*;
 
 @RestController
@@ -15,6 +12,7 @@ import java.util.*;
 public class UserController {
     private final UserService userService;
 
+    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -32,5 +30,11 @@ public class UserController {
     @PutMapping
     public User updateUser(@RequestBody User newUser) {
        return userService.updateUser(newUser);
+    }
+
+    @GetMapping("/{userId}")
+    public User findUser(@PathVariable("userId") Long userId) {
+        Optional<User> user = userService.getUserById(userId);
+        return user.orElse(null);
     }
 }

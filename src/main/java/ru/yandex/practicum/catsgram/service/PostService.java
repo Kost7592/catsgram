@@ -32,7 +32,7 @@ public class PostService {
         if (post.getDescription() == null || post.getDescription().isBlank()) {
             throw new ConditionsNotMetException("Описание не может быть пустым");
         }
-        Optional<User> user = userService.findUserById(post.getAuthorId());
+        Optional<User> user = userService.getUserById(post.getAuthorId());
         if (user.isEmpty()) {
             throw new ConditionsNotMetException("Автор с id " + post.getAuthorId() + " не найден!");
         }
@@ -55,6 +55,10 @@ public class PostService {
             return oldPost;
         }
         throw new NotFoundException("Пост с id = " + newPost.getId() + " не найден");
+    }
+
+    public Optional<Post> getPostById(Long postId) {
+        return Optional.ofNullable(posts.getOrDefault(postId, null));
     }
 
     private long getNextId() {
