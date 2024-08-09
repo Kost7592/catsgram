@@ -8,10 +8,7 @@ import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.service.PostService;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/posts")
@@ -23,9 +20,12 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping
-    public Collection<Post> findAll() {
-        return postService.findAll();
+    @GetMapping()
+    public List<Post> findAll(@RequestParam(name = "size", required = true, defaultValue = "0") int size,
+                              @RequestParam(name ="sort", defaultValue = "asc") String sort,
+                              @RequestParam(name = "page", defaultValue = "10") int from) {
+
+        return postService.findAll(size, sort, from);
     }
 
     @PostMapping

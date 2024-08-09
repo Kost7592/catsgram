@@ -8,10 +8,8 @@ import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.model.User;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 // Указываем, что класс PostService - является бином и его
 // нужно добавить в контекст приложения
@@ -24,8 +22,24 @@ public class PostService {
     public PostService(UserService userService) {
         this.userService = userService;
     }
-    public Collection<Post> findAll() {
-        return posts.values();
+
+    public List<Post> findAll(int size, String sort, int from) {
+        Collection<Post> postsCollection = posts.values();
+        List<Post> postsList = new ArrayList<>(postsCollection);
+        if (sort.equals("asc")) {
+            return postsList.stream()
+                    .sorted(Comparator.comparing(Post::getPostDate))
+                    .skip(from)
+                    .limit(size)
+                    .collect(Collectors.toList());
+        } else if (sort.equals("desc")) {
+            return postsList .stream()
+                    .sorted(Comparator.comparing(Post::getPostDate))
+                    .skip(from)
+                    .limit(size)
+                    .collect(Collectors.toList());
+        }
+        return postsList.subList(from, Math.min(size + from - 1, postsList.size()));
     }
 
     public Post create(Post post) {
