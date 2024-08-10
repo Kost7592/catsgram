@@ -18,7 +18,6 @@ public class PostService {
     private final UserService userService;
     private final Map<Long, Post> posts = new HashMap<>();
 
-    @Autowired
     public PostService(UserService userService) {
         this.userService = userService;
     }
