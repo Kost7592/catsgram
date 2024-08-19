@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.catsgram.exception.ConditionsNotMetException;
 import ru.yandex.practicum.catsgram.exception.NotFoundException;
+import ru.yandex.practicum.catsgram.exception.ParameterNotValidException;
 import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.service.PostService;
 
@@ -25,7 +26,15 @@ public class PostController {
     public List<Post> findAll(@RequestParam(name = "size", required = true, defaultValue = "0") int size,
                               @RequestParam(name ="sort", defaultValue = "asc") String sort,
                               @RequestParam(name = "page", defaultValue = "10") int from) {
-
+        if (sort == null) {
+            throw new ParameterNotValidException("sort", "Получено " + sort + " должно быть: desc или ask.");
+        }
+        if (size <= 0) {
+            throw new ParameterNotValidException("size", "Размер должен быть больше нуля.");
+        }
+        if (from < 0) {
+            throw new ParameterNotValidException("from", "Начало выборки должно быть положитеьным числом");
+        }
         return postService.findAll(size, sort, from);
     }
 
