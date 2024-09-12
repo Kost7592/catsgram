@@ -2,6 +2,7 @@ package ru.yandex.practicum.catsgram.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.catsgram.dal.UserRepository;
 import ru.yandex.practicum.catsgram.exception.ConditionsNotMetException;
 import ru.yandex.practicum.catsgram.exception.DuplicatedDataException;
 import ru.yandex.practicum.catsgram.exception.NotFoundException;
@@ -12,15 +13,19 @@ import java.util.*;
 
 @Service
 public class UserService {
+    private final UserRepository userRepository;
+
     private final Map<Long, User> users = new HashMap<>();
 
-    @GetMapping
-    public Collection<User> getUsers() {
-        return users.values();
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    @PostMapping
-    public User createUser(@RequestBody User user) {
+    public List<User> getUsers() {
+        return userRepository.findAll();
+    }
+
+    public User createUser(User user) {
         if (user.getEmail().isEmpty() || user.getEmail().isBlank()) {
             throw new ConditionsNotMetException("@mail не может быть пустым!");
         }
@@ -35,7 +40,6 @@ public class UserService {
         return user;
     }
 
-    @PutMapping
     public User updateUser(@RequestBody User newUser) {
         if (newUser.getId() == null) {
             throw new ConditionsNotMetException("Id должен быть указан");

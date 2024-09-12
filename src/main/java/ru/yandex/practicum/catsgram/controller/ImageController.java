@@ -15,10 +15,6 @@ import java.util.List;
 public class ImageController {
     private final ImageService imageService;
 
-    public ImageController(ImageService imageService) {
-        this.imageService = imageService;
-    }
-
     @GetMapping("/posts/{postId}/images")
         public List<Image> getPostImages(@PathVariable("postId") long postId) {
             return imageService.getPostImages(postId);

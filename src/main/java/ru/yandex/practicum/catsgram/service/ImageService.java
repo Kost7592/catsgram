@@ -1,7 +1,7 @@
 package ru.yandex.practicum.catsgram.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class ImageService {
     private final PostService postService;
     private final Map<Long, Image> images = new HashMap<>();
-    private final String imageDirectory = "D:\\Catsgram";
+
     @Value("${catsgram.image-directory}")
     private String imageDirectory;
 
@@ -68,7 +68,7 @@ public class ImageService {
 
     // сохранение отдельного изображения, связанного с указанным постом
     private Image saveImage(long postId, MultipartFile file) {
-        Post post = postService.findById(postId)
+        Post post = postService.getPostById(postId)
                 .orElseThrow(() -> new ConditionsNotMetException("Указанный пост не найден"));
 
         // сохраняем изображение на диск и возвращаем путь к файлу
@@ -108,7 +108,7 @@ public class ImageService {
                 return Files.readAllBytes(path);
             } catch (IOException e) {
                 throw new ImageFileException("Ошибка чтения файла.  Id: " + image.getId()
-                        + ", name: " + image.getOriginalFileName(), e);
+                        + ", name: " + image.getOriginalFileName());
             }
         } else {
             throw new ImageFileException("Файл не найден. Id: " + image.getId()
